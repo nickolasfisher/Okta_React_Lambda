@@ -6,6 +6,8 @@ import GameOver from '../Components/GameOver'
 
 import Header from '../Components/Header'
 
+import { Container } from 'react-bootstrap'
+
 class Game extends Component {
 
   constructor(props, context) {
@@ -18,6 +20,10 @@ class Game extends Component {
 
     this.boundNewGameClick = this.newGameClick.bind(this);
 
+  }
+
+  submitHighScore = (score) => {
+    console.log(score);
   }
 
   newGameClick = () => {
@@ -41,19 +47,22 @@ class Game extends Component {
       content = <GameHome newGameClick={this.newGameClick}>  </GameHome>
     }
     else if (this.state.gameState == 'loading') {
-      content = <div>Loading...</div>
+      content = <div>Please wait while we load your deck...</div>
     }
     else if (this.state.gameState == 'playing') {
       content = <GameBoard loaded={this.gameBoardLoaded} endGame={this.endGame}></GameBoard>
     }
     else if (this.state.gameState = 'finished') {
-      content = <GameOver score={this.state.lastScore} playAgain={this.newGameClick}></GameOver>
+      content = <GameOver score={this.state.lastScore} playAgain={this.newGameClick} submitHighScore={this.submitHighScore}></GameOver>
     }
 
     return (
       <div>
-        <Header></Header>
-        {content}
+        <Container>
+          <Header></Header>
+          <br></br>
+          {content}
+        </Container>
       </div>
     );
   }

@@ -1,18 +1,25 @@
 import React from 'react';
 
+import '../cards.css';
+
 const Card = ({ card }) => {
 
     var content;
 
     if (card.visible) {
-        content = <h4>{card.rank} {card.suit}</h4>;
+        var cardClass = "card rank-" + card.rank.toLowerCase() + " " + card.suit;
+        content =
+            <div className={cardClass}>
+                <div className="rank">{card.rank}</div>
+                <div className="suit"></div>
+            </ div>;
     }
     else {
-        content = <h4>Not visible</h4>
+        content = <div className="card back">*</div>
     }
 
     return (
-        <div className="col-lg-2">
+        <div className="playingCards faceImages">
             {content}
         </div>
     );

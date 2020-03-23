@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 
 import Card from './Card'
 
+import { Row, Col, Button } from 'react-bootstrap'
+
 
 class GameBoard extends Component {
 
@@ -46,7 +48,7 @@ class GameBoard extends Component {
                 order: 2
             },
             {
-                suit: 'diamonds',
+                suit: 'diams',
                 value: 8,
                 rank: '8',
                 visible: false,
@@ -127,12 +129,12 @@ class GameBoard extends Component {
 
         var leaveButton;
         if (this.state.gameOver || this.state.needsNewDeck) {
-            leaveButton = <button onClick={() => this.props.endGame(this.state.score)}>End Game</button>
+            leaveButton = <Button style={{ width: '100%'}} variant={"danger"} onClick={() => this.props.endGame(this.state.score)}>End Game</Button>
         }
 
         var newDeckButton;
         if (this.state.needsNewDeck) {
-            newDeckButton = <button onClick={() => this.getNewDeck()}>New Deck</button>
+            newDeckButton = <Button style={{ width: '100%'}} variant={"primary"} onClick={() => this.getNewDeck()}>New Deck</Button>
         }
 
         var disableButtons = this.state.gameOver || this.state.needsNewDeck;
@@ -141,41 +143,44 @@ class GameBoard extends Component {
 
             <div>
 
-                <div>Lets Play Card Sharks</div>
+                <h4>Lets Play Card Sharks</h4>
 
-                <div className="row">
+                <Row>
                     {this.state.cards.map((card, i) => {
-                        return (<Card card={card} key={i} />)
+                        return (<Col sm={2}>
+                            <Card card={card} key={i} />
+                        </Col>
+                        )
                     })}
+                </Row>
 
-                </div>
-
-                <div className="row">
-
-                    <div className="col-lg-2">
+                <Row className="mt-3">
+                    <Col sm={2}>
+                        <strong>Current Card</strong>
                         <Card card={this.state.activeCard} />
-                    </div>
+                    </Col>
 
-                    <div className="col-lg-4">
-                        <span>Higher or Lower?</span>
+                    <Col sm={4}>
 
-                        <button disabled={disableButtons} onClick={() => this.guess('higher')}>Higher</button>
-                        <button disabled={disableButtons} onClick={() => this.guess('lower')}>Lower</button>
+                        <strong>Higher or Lower?</strong>
+                        <br></br>
 
-                    </div>
+                        <Button style={{ width: '50%'}} variant="primary" disabled={disableButtons} onClick={() => this.guess('higher')}>Higher</Button> <br></br>
+                        <Button style={{ width: '50%'}} variant="warning" disabled={disableButtons} onClick={() => this.guess('lower')}>Lower</Button>
 
-                    <div className="col-lg-2">
+                    </Col>
+                    <Col sm={2}>
                         Current Score: {this.state.score}
-                    </div>
-                    <div className="col-lg-2">
+                    </Col>
+                    <Col sm={2}>
                         Last Card: {this.state.lastResult}
-                        {leaveButton}
+                        {leaveButton} <br></br>
                         {newDeckButton}
-                    </div>
+                    </Col>
 
-                </div>
+                </Row>
 
-            </div>
+            </div >
         );
     }
 

@@ -25,7 +25,7 @@ const AppWithRouterAccess = () => {
       onAuthRequired={onAuthRequired}
       pkce={true} >
       <Route path='/' exact={true} component={Home} />
-      <SecureRoute path='/Game' render={() => <Game />} />
+      <SecureRoute path='/Game' component={Game} />
       <Route path='/Scores' exact={true} component={HighScores} />
       <Route path='/login' render={() => <Login baseUrl={baseDomain} issuer={issuer} />} />
       <Route path='/implicit/callback' component={LoginCallback} />

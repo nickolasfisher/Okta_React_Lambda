@@ -2,6 +2,8 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { useOktaAuth } from '@okta/okta-react';
 
+import { Navbar, Nav, Form, Button } from 'react-bootstrap'
+
 const Header = () => {
     const { authState, authService } = useOktaAuth();
 
@@ -10,15 +12,25 @@ const Header = () => {
     }
 
     const button = authState.isAuthenticated ?
-        <button onClick={() => { authService.logout() }}>Logout</button> :
-        <button onClick={() => { authService.login() }}>Login</button>;
+        <Button variant="secondary" onClick={() => { authService.logout() }}>Logout</Button> :
+        <Button variant="secondary" onClick={() => { authService.login() }}>Login</Button> 
 
     return (
-        <div>
-            <Link to='/'>Home</Link><br />
-            <Link to='/Game'>New Game</Link><br />
-            {button}
-        </div>
+
+        <Navbar bg="light" expand="lg">
+            <Navbar.Brand href="/">Card Sharks</Navbar.Brand>
+            <Navbar.Toggle aria-controls="basic-navbar-nav" />
+            <Navbar.Collapse id="basic-navbar-nav">
+                <Nav className="mr-auto">
+                    <Nav.Link href="/">Home</Nav.Link>
+                    <Nav.Link href="/game">New Game</Nav.Link>
+                </Nav>
+                <Form inline>
+                    {button}
+                </Form>
+            </Navbar.Collapse>
+        </Navbar>
+
     );
 };
 export default Header;
