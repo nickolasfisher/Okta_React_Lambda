@@ -1,5 +1,4 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import { useOktaAuth } from '@okta/okta-react';
 
 import { Navbar, Nav, Form, Button } from 'react-bootstrap'
@@ -13,7 +12,7 @@ const Header = () => {
 
     const button = authState.isAuthenticated ?
         <Button variant="secondary" onClick={() => { authService.logout() }}>Logout</Button> :
-        <Button variant="secondary" onClick={() => { authService.login() }}>Login</Button> 
+        <Button variant="secondary" onClick={() => { authService.login() }}>Login</Button>
 
     return (
 

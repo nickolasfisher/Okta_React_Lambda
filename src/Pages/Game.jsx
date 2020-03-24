@@ -7,28 +7,57 @@ import GameOver from '../Components/GameOver'
 import Header from '../Components/Header'
 
 import { Container } from 'react-bootstrap'
+import { withOktaAuth } from '@okta/okta-react';
 
 class Game extends Component {
 
   constructor(props, context) {
     super(props, context);
 
+
     this.state = {
       gameState: 'none',
-      lastScore: 0
+      lastScore: 0,
+      loading: false,
+      highScores: [],
+      player: ''
     }
 
-    this.boundNewGameClick = this.newGameClick.bind(this);
-
+    this.submitHighScore = this.submitHighScore.bind(this);
   }
 
-  submitHighScore = (score) => {
-    console.log(score);
+  componentDidMount = () => {
+    this.setState({ loading: true });
+    fetch(process.env.REACT_APP_AMAZON_API_BASE + '/prod/highscore')
+      .then(res => res.json())
+      .then(
+        (result) => {
+          this.setState({ highScores: JSON.parse(result.body) });
+        })
+      .then(() => this.props.authService.getUser())
+      .then(user => {
+        this.setState({ loading: false, player: user.email })
+      });
+  }
+
+  submitHighScore = () => {
+
+    fetch(process.env.REACT_APP_AMAZON_API_BASE + "/prod/highscore/",
+      {
+        headers: {
+          'Accept': 'application/json',
+          'Content-Type': 'application/json'
+        },
+        method: "POST",
+        body: JSON.stringify({ player: this.state.player, score: this.state.lastScore })
+      })
+      .then(function (res) {
+        //display message however you wish
+      })
   }
 
   newGameClick = () => {
-    this.setState({ gameState: 'loading' })
-    setTimeout(this.gameBoardLoaded, 500);
+    this.gameBoardLoaded();
   }
 
   gameBoardLoaded = () => {
@@ -43,13 +72,16 @@ class Game extends Component {
 
     var content;
 
-    if (this.state.gameState == 'none') {
-      content = <GameHome newGameClick={this.newGameClick}>  </GameHome>
+    if (this.state.loading) {
+      content = <h3>Loading, please wait</h3>
     }
-    else if (this.state.gameState == 'loading') {
+    if (this.state.gameState === 'none') {
+      content = <GameHome newGameClick={this.newGameClick} highScores={this.state.highScores} >  </GameHome>
+    }
+    else if (this.state.gameState === 'loading') {
       content = <div>Please wait while we load your deck...</div>
     }
-    else if (this.state.gameState == 'playing') {
+    else if (this.state.gameState === 'playing') {
       content = <GameBoard loaded={this.gameBoardLoaded} endGame={this.endGame}></GameBoard>
     }
     else if (this.state.gameState = 'finished') {
@@ -67,4 +99,4 @@ class Game extends Component {
     );
   }
 }
-export default Game;
+export default withOktaAuth(Game);

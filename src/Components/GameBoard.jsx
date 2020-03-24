@@ -25,58 +25,28 @@ class GameBoard extends Component {
     }
 
     getNewDeck = () => {
-        var cards = [
-            {
-                suit: 'hearts',
-                value: 5,
-                rank: '5',
-                visible: true,
-                order: 0
-            },
-            {
-                suit: 'hearts',
-                value: 6,
-                rank: '6',
-                visible: false,
-                order: 1
-            },
-            {
-                suit: 'spades',
-                value: 7,
-                rank: '7',
-                visible: false,
-                order: 2
-            },
-            {
-                suit: 'diams',
-                value: 8,
-                rank: '8',
-                visible: false,
-                order: 3
-            },
-            {
-                suit: 'clubs',
-                value: 9,
-                rank: '9',
-                visible: false,
-                order: 4
-            },
-            {
-                suit: 'hearts',
-                value: 11,
-                rank: 'J',
-                visible: false,
-                order: 5
-            }
-        ];
 
-        this.setState(
-            {
-                cards: cards,
-                activeCard: cards[0],
-                needsNewDeck: false
-            }
-        )
+        this.setState({ loading: true });
+
+        fetch(process.env.REACT_APP_AMAZON_API_BASE + '/prod/deck')
+            .then(res => res.json())
+            .then(
+                (result) => {
+
+                    var cards = JSON.parse(result.body);
+
+                    this.setState(
+                        {
+                            cards: cards,
+                            activeCard: cards[0],
+                            needsNewDeck: false,
+                            loading: false
+                        }
+                    )
+                }
+            )
+
+
     }
 
     guess = (higherOrLower) => {
@@ -88,13 +58,13 @@ class GameBoard extends Component {
         var nextCardIdx = activeCard.order + 1;
         var nextCard = this.state.cards[nextCardIdx];
 
-        if (nextCard.value > activeCard.value && higherOrLower == 'higher') {
+        if (nextCard.value > activeCard.value && higherOrLower === 'higher') {
             correct = true;
         }
-        else if (nextCard.value < activeCard.value && higherOrLower == 'lower') {
+        else if (nextCard.value < activeCard.value && higherOrLower === 'lower') {
             correct = true;
         }
-        else if (nextCard.value == activeCard.value) {
+        else if (nextCard.value === activeCard.value) {
             push = true;
         }
 
@@ -102,13 +72,13 @@ class GameBoard extends Component {
             this.setState({
                 score: this.state.score + 1,
                 lastResult: 'Correct! ',
-                needsNewDeck: nextCardIdx == 5
+                needsNewDeck: nextCardIdx === 5
             });
         }
         else if (push) {
             this.setState({
                 lastResult: 'A push!  Keep playing.  ',
-                needsNewDeck: nextCardIdx == 5
+                needsNewDeck: nextCardIdx === 5
             });
         }
         else {
@@ -127,14 +97,18 @@ class GameBoard extends Component {
 
     render() {
 
+        if (this.state.loading) {
+            return <h4>Loading, please wait.</h4>
+        }
+
         var leaveButton;
         if (this.state.gameOver || this.state.needsNewDeck) {
-            leaveButton = <Button style={{ width: '100%'}} variant={"danger"} onClick={() => this.props.endGame(this.state.score)}>End Game</Button>
+            leaveButton = <Button style={{ width: '100%' }} variant={"danger"} onClick={() => this.props.endGame(this.state.score)}>End Game</Button>
         }
 
         var newDeckButton;
         if (this.state.needsNewDeck) {
-            newDeckButton = <Button style={{ width: '100%'}} variant={"primary"} onClick={() => this.getNewDeck()}>New Deck</Button>
+            newDeckButton = <Button style={{ width: '100%' }} variant={"primary"} onClick={() => this.getNewDeck()}>New Deck</Button>
         }
 
         var disableButtons = this.state.gameOver || this.state.needsNewDeck;
@@ -147,8 +121,8 @@ class GameBoard extends Component {
 
                 <Row>
                     {this.state.cards.map((card, i) => {
-                        return (<Col sm={2}>
-                            <Card card={card} key={i} />
+                        return (<Col key={i} sm={2}>
+                            <Card card={card} />
                         </Col>
                         )
                     })}
@@ -165,8 +139,8 @@ class GameBoard extends Component {
                         <strong>Higher or Lower?</strong>
                         <br></br>
 
-                        <Button style={{ width: '50%'}} variant="primary" disabled={disableButtons} onClick={() => this.guess('higher')}>Higher</Button> <br></br>
-                        <Button style={{ width: '50%'}} variant="warning" disabled={disableButtons} onClick={() => this.guess('lower')}>Lower</Button>
+                        <Button style={{ width: '50%' }} variant="primary" disabled={disableButtons} onClick={() => this.guess('higher')}>Higher</Button> <br></br>
+                        <Button style={{ width: '50%' }} variant="warning" disabled={disableButtons} onClick={() => this.guess('lower')}>Lower</Button>
 
                     </Col>
                     <Col sm={2}>

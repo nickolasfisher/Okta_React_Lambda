@@ -13,7 +13,7 @@ const Home = () => {
 
       <Row>
 
-        <Col sm-12 className="text-center">
+        <Col sm={12} className="text-center">
           <h3>Card Sharks!</h3>
           <h4>A React Demo using Okta</h4>
         </Col>
@@ -22,7 +22,7 @@ const Home = () => {
       <br></br>
 
       <Row >
-        <Col sm-12 className="text-center">
+        <Col sm={12} className="text-center">
           <Card style={{ width: '21.5em', margin: '0 auto' }}>
             <Card.Header>
               Already have an Okta Account?

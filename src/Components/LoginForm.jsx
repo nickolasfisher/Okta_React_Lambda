@@ -12,7 +12,6 @@ const LoginForm = ({ baseUrl, issuer }) => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(username, password)
     const oktaAuth = new OktaAuth({ url: baseUrl, issuer: issuer });
     oktaAuth.signIn({ username, password })
       .then(res => setSessionToken(res.sessionToken))

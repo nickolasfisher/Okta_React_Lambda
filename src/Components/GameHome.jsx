@@ -2,9 +2,10 @@ import React from 'react';
 
 import { Row, Col, Table, Button } from 'react-bootstrap'
 
-const GameHome = ({ newGameClick }) => {
+const GameHome = ({ newGameClick, highScores, submitHighScore }) => {
 
     return (
+
         <div>
             <Row>
                 <Col lg={12}>
@@ -22,15 +23,16 @@ const GameHome = ({ newGameClick }) => {
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>Nik</td>
-                                <td>10</td>
-                            </tr>
+                            {
+                                highScores.map((highScore, i) => {
+                                    return (
+                                        <tr key={i}>
+                                            <td>{highScore.player}</td>
+                                            <td>{highScore.score}</td>
+                                        </tr>
+                                    );
+                                })}
 
-                            <tr>
-                                <td>Colin</td>
-                                <td>7</td>
-                            </tr>
                         </tbody>
                     </Table>
 
